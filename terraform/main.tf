@@ -49,6 +49,7 @@ module "name" {
   cloud         = "AWS"
   environment   = terraform.workspace
   location      = module.data.current_region
+  suffix        = local.application
 }
 
 ###############################################################################
