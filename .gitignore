@@ -1,0 +1,8 @@
+.DS_Store
+.terraform/
+terraform.tfstate*
+*.log
+env.sh
+bin/
+obj/
+*.zip
