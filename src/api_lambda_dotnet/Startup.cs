@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
 
 namespace api_lambda_dotnet
 {
@@ -31,6 +32,7 @@ namespace api_lambda_dotnet
 
             // Add S3 to the ASP.NET Core dependency injection framework.
             services.AddAWSService<Amazon.S3.IAmazonS3>();
+            AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -40,6 +42,7 @@ namespace api_lambda_dotnet
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseXRay("api_lambda_dotnet");
 
             app.UseHttpsRedirection();
 

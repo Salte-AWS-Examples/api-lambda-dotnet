@@ -1,0 +1,186 @@
+swagger: "2.0"
+info:
+  description: "Reference implementation including: AzureAD OAuth 2.0 Security, .NET Core 3.1, AWS Lambda, AWS API Gateway, Terraform for AWS resource provisioning, and Gitlab for build and deployment orchestration."
+  version: "0.0.1"
+  title: "OAuth 2.0 Secured .NET Core 3.1 Lambda API"
+  contact:
+    email: admin@salte.io
+basePath: "/"
+schemes:
+  - "https"
+paths:
+  /api/s3proxy:
+    get:
+      produces:
+        - "text/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/S3Objects"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  /api/s3proxy/{key}:
+    get:
+      produces:
+        - "text/plain"
+      parameters:
+        - in: path
+          name: key
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    put:
+      produces:
+        - "text/plain"
+      parameters:
+        - in: path
+          name: key
+          type: string
+          required: true
+        - in: body
+          name: value
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Success"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    delete:
+      parameters:
+        - in: path
+          name: key
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  /api/values:
+    get:
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Values"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: value
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Values"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  /api/values/{id}:
+    get:
+      produces:
+        - "text/plain"
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "string"
+        400:
+          description: "Invalid Identifier"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    put:
+      produces:
+        - "application/json"
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+        - in: body
+          name: value
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Values"
+        400:
+          description: "Invalid Identifier"
+      x-amazon-apigateway-integration:
+        uri: "${lambda_arn}"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+definitions:
+  StorageClass:
+    properties:
+      value:
+        type: string
+  S3Object:
+    properties:
+      eTag:
+        type: string
+      bucketName:
+        type: string
+      key:
+        type: string
+      lastModified:
+        type: string
+      owner:
+        type: string
+      size:
+        type: integer
+      storageClass:
+        $ref: "#/definitions/StorageClass"
+  S3Objects:
+    type: "array"
+    items:
+      $ref: "#/definitions/S3Object"
+  Values:
+    type: "array"
+    items:
+      type: "string"

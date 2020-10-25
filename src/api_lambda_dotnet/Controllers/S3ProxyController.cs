@@ -42,10 +42,12 @@ namespace api_lambda_dotnet.Controllers
         [HttpGet]
         public async Task<JsonResult> Get()
         {
+            Logger.LogInformation("Get called without path parameters.");
             var listResponse = await this.S3Client.ListObjectsV2Async(new ListObjectsV2Request
             {
                 BucketName = this.BucketName
             });
+            Logger.LogInformation(" ListObjectsV2Request returned successfully.");
 
             try
             {

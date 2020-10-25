@@ -1,8 +1,14 @@
-output "resource_base_name" {
-  value = join("", [local.output, upper(var.suffix)])
+output "uppercase" {
+  value = upper(join("", [lookup(local.environment, var.environment, var.environment), lookup(local.cloud, var.cloud, var.cloud), lookup(local.location, var.location, var.location), replace(replace(var.application, "-", ""), "_", "")]))
 }
 
-output "server_base_name" {
-  value = var.os == "" ? "" : join("", [local.output, lookup(local.operating_system, var.os, upper(var.os)), lookup(local.purpose, var.purpose, upper(var.purpose)), upper(var.suffix)])
+output kebab_case {
+  value  = lower(join("", [lookup(local.environment, var.environment, var.environment), "-", lookup(local.cloud, var.cloud, var.cloud), "-", lookup(local.location, var.location, var.location), "-", var.application]))
 }
+
+output snake_case {
+  value  = lower(join("", [lookup(local.environment, var.environment, var.environment), "_", lookup(local.cloud, var.cloud, var.cloud), "_", lookup(local.location, var.location, var.location), "_", var.application]))
+}
+
+
 

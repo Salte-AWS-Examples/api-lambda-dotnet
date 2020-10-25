@@ -23,7 +23,8 @@ if [ -f "$DIR/env.sh" ]; then
 fi
 
 # Set the Terraform workspace to the current deployable branch or default to sandbox.
-BRANCH=$(git rev-parse --abbrev-ref HEAD | grep -P "(sandbox|development|qa|production)")
+# BRANCH=$(git rev-parse --abbrev-ref HEAD | grep -P "(sandbox|development|qa|production)")
+BRANCH=$(git rev-parse --abbrev-ref HEAD | perl -nle'print if m{(sandbox|development|qa|production)}')
 if [ -z "$BRANCH" ]; then
   BRANCH=sandbox
 fi
@@ -35,17 +36,18 @@ dotnet restore
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "The restore must have failed! The return code was ${ret}."
-  return $ret
+  exit $ret
 fi
 
 cd $DIR/../test/api_lambda_dotnet.Tests
 
+export AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
 dotnet test
 
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "One or more test must have failed! The return code was ${ret}."
-  return $ret
+  exit $ret
 fi
 
 cd $DIR/../src/api_lambda_dotnet
@@ -55,7 +57,7 @@ dotnet build -c Release
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "The build must have failed! The return code was ${ret}."
-  return $ret
+  exit $ret
 fi
 
 cd $DIR/../terraform

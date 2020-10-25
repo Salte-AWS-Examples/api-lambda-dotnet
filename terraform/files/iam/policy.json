@@ -4,6 +4,9 @@
     {
       "Effect": "Allow",
       "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
@@ -14,8 +17,11 @@
     },
     {
       "Effect": "Allow",
-      "Action": "s3.*",
-      "Resource": "${bucket_arn}/*"
+      "Action": "s3:*",
+      "Resource": [
+        "${bucket_arn}",
+        "${bucket_arn}/*"
+      ]
     }
   ]
 }
