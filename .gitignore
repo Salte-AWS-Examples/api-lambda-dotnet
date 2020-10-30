@@ -6,3 +6,5 @@ env.sh
 bin/
 obj/
 *.zip
+coverage.*.xml
+.sonarqube

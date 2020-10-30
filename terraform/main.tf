@@ -94,7 +94,7 @@ resource "aws_iam_role_policy_attachment" "default" {
 ###############################################################################
 data "archive_file" "default" {
   type = "zip"
-  source_dir = "${path.module}/../src/api_lambda_dotnet/bin/Release/netcoreapp3.1"
+  source_dir = "${path.module}/../src/api_lambda_dotnet/bin/Release/netcoreapp3.1/publish"
   output_path = "${path.module}/lambda.zip"
 }
 
